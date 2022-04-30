@@ -9,7 +9,7 @@
 import UIKit
 
 class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
-
+    
     @IBOutlet weak var conditionImageView: UIImageView!
     
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -33,10 +33,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         print(searchTextField.text!)
     }
     
-
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchTextField.endEditing(true)
-
+        
         print(searchTextField.text!)
         return true
     }
@@ -50,11 +50,17 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         searchTextField.text = ""
     }
     
-    func didUpdateWeather(weather: WeatherModel) {
-        delegate?.didUpdateWeather(weather: weather)
-        print(weather.temperature)
-        print(weather.conditionId)
+    func didUpdateWeather (_ weatherManager: WeatherManager, _ weather: WeatherModel) {
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = weather.temperatureString
+            self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+            self.cityLabel.text = weather.cityName
+        }
         
+    }
+    
+    func didFailWitchError(error: Error) {
+        print(error)
     }
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
@@ -67,6 +73,4 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
 }
 
-protocol WeatherManagerDelegate {
-    func didUpdateWeather(weather: WeatherModel)
-}
+
