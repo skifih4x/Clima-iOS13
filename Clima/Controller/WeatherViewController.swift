@@ -18,6 +18,8 @@ class WeatherViewController: UIViewController {
     
     @IBOutlet var searchTextField: UITextField!
     
+    @IBOutlet var currentLocation: UIButton!
+    
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
     
@@ -29,6 +31,7 @@ class WeatherViewController: UIViewController {
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 }
 
@@ -62,7 +65,7 @@ extension WeatherViewController: UITextFieldDelegate {
         searchTextField.text = ""
     }
 }
- 
+
 //MARK: - WeatherManagerDelegate
 
 extension WeatherViewController: WeatherManagerDelegate {
@@ -86,4 +89,21 @@ extension WeatherViewController: WeatherManagerDelegate {
 
 extension WeatherViewController: CLLocationManagerDelegate {
     
+    @IBAction func currentLocationButton(_ sender: UIButton) {
+        view.endEditing(true)
+        locationManager.startUpdatingLocation()
+//        locationManager.requestLocation()
+//        print("xyi")
+    }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            weatherManager.fetchWeather(latitude: lat, longitude: lon)
+            manager.stopUpdatingLocation()
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Failed")
+    }
 }
