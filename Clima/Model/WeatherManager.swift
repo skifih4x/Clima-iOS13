@@ -31,11 +31,11 @@ struct WeatherManager {
     
     func performRequest(with urlString: String) {
         
-        //1. Create a URL
+        
         if let url = URL(string: urlString) {
-            //2. Create a URLSession
+            
             let session = URLSession(configuration: .default)
-            //3. Give the session a task
+            
             let task = session.dataTask(with: url) { (data, response, error) in
                 if error != nil {
                     delegate?.didFailWitchError(error: error!)
